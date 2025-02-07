@@ -31,27 +31,6 @@ io.on("connection", (socket) => {
   }
 
   // Assign player to a team
-  // const assignTeam = () => {
-  //   // If left team has fewer players, assign to left
-  //   if (teams.left.length < teams.right.length) {
-  //     teams.left.push(socket.id);
-  //     return "left";
-  //   }
-  //   // If right team has fewer players, assign to right
-  //   else if (teams.right.length < teams.left.length) {
-  //     teams.right.push(socket.id);
-  //     return "right";
-  //   }
-  //   // If teams are equal, assign to team with fewer players (or left by default)
-  //   else if (teams.left.length < 2) {
-  //     teams.left.push(socket.id);
-  //     return "left";
-  //   } else {
-  //     teams.right.push(socket.id);
-  //     return "right";
-  //   }
-  // };
-
   const assignTeam = () => {
     // If left team has fewer players, assign to left
     if (teams.left.length < teams.right.length) {
@@ -96,12 +75,6 @@ io.on("connection", (socket) => {
     position: teamAssignment.position,
   };
 
-  // Assign a random color to the player
-  // const color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-  // players[socket.id] = { y: 50, color };
-
-  // Emit the current game state to the new player
-  // socket.emit("init", { players, ball, score });
   socket.emit("init", {
     players,
     ball,
@@ -111,7 +84,6 @@ io.on("connection", (socket) => {
   });
 
   // Broadcast the new player to others
-  // socket.broadcast.emit("playerJoined", { id: socket.id, y: 50, color });
   socket.broadcast.emit("playerJoined", {
     id: socket.id,
     y: initialY,
@@ -141,49 +113,6 @@ io.on("connection", (socket) => {
   });
 
   // Handle disconnection
-  // socket.on("disconnect", () => {
-  //   delete players[socket.id];
-  //   io.emit("playerLeft", socket.id);
-
-  //   // Reset game state when a player leaves
-  //   if (Object.keys(players).length < 2) {
-  //     gameStarted = false;
-  //     ball = { x: 50, y: 50, dx: 2, dy: 0 };
-  //     score = { left: 0, right: 0 };
-  //     io.emit("updateScore", score);
-  //     io.emit("updateBall", ball);
-  //     io.emit("gameStopped"); // Emit new event to show start screen
-  //   }
-  //   console.log("A user disconnected:", socket.id);
-  // });
-  // socket.on("disconnect", () => {
-  //   const team = players[socket.id]?.team;
-  //   if (team) {
-  //     // Remove player from team
-  //     teams[team] = teams[team].filter((id) => id !== socket.id);
-  //     // Reposition remaining team player if exists
-  //     if (teams[team].length === 1) {
-  //       const remainingPlayerId = teams[team][0];
-  //       players[remainingPlayerId].y = 50; // Center the remaining player
-  //       io.emit("playerMoved", { id: remainingPlayerId, y: 50 });
-  //     }
-  //   }
-
-  //   delete players[socket.id];
-  //   io.emit("playerLeft", socket.id);
-
-  //   // Stop game if any team is empty
-  //   if (teams.left.length === 0 || teams.right.length === 0) {
-  //     gameStarted = false;
-  //     ball = { x: 50, y: 50, dx: 2, dy: 0 };
-  //     score = { left: 0, right: 0 };
-  //     io.emit("updateScore", score);
-  //     io.emit("updateBall", ball);
-  //     io.emit("gameStopped");
-  //   }
-
-  //   console.log("A user disconnected:", socket.id);
-  // });
   socket.on("disconnect", () => {
     const team = players[socket.id]?.team;
     if (team) {

@@ -39,19 +39,6 @@ document.getElementById("startButton").addEventListener("click", () => {
   document.getElementById("startButton").disabled = true;
 });
 
-// socket.on("init", (data) => {
-//   players = data.players;
-//   ball = data.ball;
-//   score = data.score;
-
-//   if (Object.keys(players).length >= 2) {
-//     document.getElementById("startButton").disabled = false;
-//   } else {
-//     showStartScreen();
-//     document.getElementById("startButton").disabled = true;
-//   }
-// });
-
 socket.on("init", (data) => {
   players = data.players;
   ball = data.ball;
@@ -86,11 +73,6 @@ socket.on("playerJoined", (data) => {
   }
 });
 
-// socket.on("playerMoved", (data) => {
-//   if (players[data.id]) {
-//     players[data.id].y = data.y;
-//   }
-// });
 socket.on("playerMoved", (data) => {
   if (players[data.id]) {
     players[data.id].y = data.y;
@@ -133,37 +115,6 @@ socket.on("gameStopped", () => {
   showStartScreen();
   document.getElementById("startButton").disabled = true;
 });
-
-// function render() {
-//   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-//   // Draw players (paddles)
-//   Object.keys(players).forEach((id, index) => {
-//     const player = players[id];
-//     const paddleWidth = canvas.width * 0.02; // 2% of screen width
-//     const paddleHeight = canvas.height * 0.15; // 15% of screen height
-//     const paddleX = index === 0 ? 0 : canvas.width - paddleWidth;
-//     const paddleY = (player.y / 100) * canvas.height - paddleHeight / 2;
-
-//     ctx.fillStyle = player.color;
-//     ctx.fillRect(paddleX, paddleY, paddleWidth, paddleHeight);
-//   });
-
-//   // Draw ball
-//   const ballSize = canvas.width * 0.02; // 2% of screen width
-//   ctx.fillStyle = "white";
-//   ctx.beginPath();
-//   ctx.arc(
-//     (ball.x / 100) * canvas.width,
-//     (ball.y / 100) * canvas.height,
-//     ballSize / 2,
-//     0,
-//     Math.PI * 2
-//   );
-//   ctx.fill();
-
-//   requestAnimationFrame(render);
-// }
 
 // Update the render function to handle team positions
 function render() {
@@ -208,4 +159,83 @@ function render() {
   requestAnimationFrame(render);
 }
 
+function handleResize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  checkOrientation();
+}
+
+// Check device orientation
+function checkOrientation() {
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+  if (isMobile) {
+    if (window.innerHeight > window.innerWidth) {
+      document.body.style.transform = "rotate(90deg)";
+      document.body.style.transformOrigin = "50% 50%";
+      document.body.style.height = "100vw";
+      document.body.style.width = "100vh";
+
+      // Force landscape dimensions
+      canvas.width = Math.max(window.innerWidth, window.innerHeight);
+      canvas.height = Math.min(window.innerWidth, window.innerHeight);
+    } else {
+      document.body.style.transform = "";
+      document.body.style.height = "100%";
+      document.body.style.width = "100%";
+    }
+  }
+}
+
+// Update CSS
+const style = document.createElement("style");
+style.textContent = `
+    body {
+        margin: 0;
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #000;
+    }
+    
+    canvas {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+    
+    .score {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: white;
+        font-size: clamp(16px, 4vw, 24px);
+        z-index: 100;
+    }
+    
+    #startScreen {
+        position: fixed;
+        z-index: 100;
+        text-align: center;
+    }
+    
+    #startButton {
+        padding: clamp(8px, 2vw, 20px) clamp(16px, 4vw, 40px);
+        font-size: clamp(14px, 3vw, 20px);
+    }
+`;
+document.head.appendChild(style);
+
+// Add event listeners
+window.addEventListener("resize", handleResize);
+window.addEventListener("orientationchange", () => {
+  setTimeout(handleResize, 100);
+});
+
+handleResize();
 render();
