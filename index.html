@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ping Pong Game</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="game-container">
+      <div id="menu">
+        <button id="start-btn">Start Game</button>
+        <button id="options-btn">Options</button>
+        <div id="difficulty-menu" class="hidden">
+          <button data-difficulty="easy">Easy</button>
+          <button data-difficulty="normal">Normal</button>
+          <button data-difficulty="hard">Hard</button>
+        </div>
+      </div>
+      <div id="score">Player: 0 | Bot: 0</div>
+      <div id="game-over" class="hidden"></div>
+      <canvas id="game-canvas"></canvas>
+    </div>
+
+    <script src="scripts/Player.js"></script>
+    <script src="scripts/Bot.js"></script>
+    <script src="scripts/Ball.js"></script>
+    <script src="scripts/Menu.js"></script>
+    <script src="scripts/Game.js"></script>
+    <script src="engine.js"></script>
+  </body>
+</html>
